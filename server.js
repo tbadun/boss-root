@@ -1,13 +1,20 @@
 const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const app = express();
 
 module.exports = app;
 const PORT = process.env.PORT || 4001;
 
 // Add middleware for handling CORS requests from index.html
+// const corsOptions = {
+//   origin: '',
+//   optionsSuccessStatus: 200
+// }
 
+app.use(cors());
 
-// Add middware for parsing request bodies here:
+app.use(bodyParser.json());
 
 const apiRouter = require('./server/api');
 app.use('/api', apiRouter);
