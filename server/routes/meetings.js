@@ -4,7 +4,7 @@ const { createMeeting } = require('../db')
 
 // DEFAULT: '/api/meetings'
 const meetingsRouter = express.Router();
-const meetingsFxns = new Handler('meetings', '');
+const meetingsFxns = new Handler('meetings', '', createMeeting);
 
 // get all ideas
 meetingsRouter.get('/', (req, res, next) => {
@@ -13,7 +13,7 @@ meetingsRouter.get('/', (req, res, next) => {
 
 // create new meeting
 meetingsRouter.post('/', (req, res, next) => {
-    meetingsFxns.createOne(createMeeting, req, res, next);
+    meetingsFxns.createOne(req, res, next);
 });
 
 // delete all meetings

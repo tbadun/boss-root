@@ -5,7 +5,6 @@ const { isNumeric } = require('./util/helper');
 
 // DEFAULT: '/api/ideas'
 const ideasRouter = express.Router();
-const ideaFxns = new Handler('ideas', 'ideaId');
 
 const validateNewIdea = req => {
     if (typeof req.query.name !== 'string' || typeof req.query.description !== 'string') {
@@ -25,6 +24,9 @@ const validateNewIdea = req => {
     }
 }
 
+
+const ideaFxns = new Handler('ideas', 'ideaId', validateNewIdea);
+
 // get all ideas
 ideasRouter.get('/', (req, res, next) => {
     ideaFxns.getAll(req, res, next);
@@ -32,7 +34,7 @@ ideasRouter.get('/', (req, res, next) => {
 
 // create new idea
 ideasRouter.post('/', (req, res, next) => {
-    ideaFxns.createOne(validateNewIdea, req, res, next);
+    ideaFxns.createOne(req, res, next);
 });
 
 // get specific idea by id

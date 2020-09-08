@@ -5,7 +5,6 @@ const workRouter = require('./work');
 // DEFAULT: '/api/minions'
 
 const minionsRouter = express.Router();
-const minionFxns = new Handler('minions', 'minionId');
 
 minionsRouter.use('/', workRouter);
 
@@ -24,6 +23,8 @@ const validateNewMinion = req => {
     }
 }
 
+const minionFxns = new Handler('minions', 'minionId', validateNewMinion);
+
 // get all minions
 minionsRouter.get('/', (req, res, next) => {
     minionFxns.getAll(req, res, next);
@@ -31,7 +32,7 @@ minionsRouter.get('/', (req, res, next) => {
 
 // create new minion
 minionsRouter.post('/', (req, res, next) => {
-    minionFxns.createOne(validateNewMinion, req, res, next);
+    minionFxns.createOne(req, res, next);
 });
 
 // get specific minion by id

@@ -5,7 +5,6 @@ const { getFromDatabaseById } = require('../db');
 
 // DEFAULT: '/api/minions/:minionId/work'
 const workRouter = express.Router();
-const workFxns = new Handler('work', 'workId');
 
 const validateNewWork = req => {
     if (typeof req.query.minionId !== 'string' || typeof req.query.description !== 'string' || typeof req.query.title !== 'string') {
@@ -25,6 +24,9 @@ const validateNewWork = req => {
     };
 }
 
+
+const workFxns = new Handler('work', 'workId', validateNewWork);
+
 // get all work for minion
 workRouter.get('/:minionId/work', (req, res, next) => {
     const result = getAllFromDatabase(DB_NAME).filter(ele => ele.minionId === req.params.minionId);
@@ -37,7 +39,7 @@ workRouter.get('/:minionId/work', (req, res, next) => {
 
 // create new work for minion
 workRouter.post('/:minionId/work', (req, res, next) => {
-    workFxns.createOne(validateNewWork, req, res, next)
+    workFxns.createOne(req, res, next)
 });
 
 // update specific work by id for minion
@@ -45,7 +47,7 @@ workRouter.put('/:minionId/work/:workId', (req, res, next) => {
     if (getFromDatabaseById('work', req.params.workId).minionId !== req.params.minionId) {
         res.status(404).send('no such work for minion');
     } else {
-        workFxns.updateOne(req, res, next);
+        workFxns.updateOne(validateNewMinion, req, res, next);
     }
 });
 
