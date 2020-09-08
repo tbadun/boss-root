@@ -75,4 +75,4 @@ class Handler {
     }
 };
 
-export default Handler;
+module.exports = Handler;

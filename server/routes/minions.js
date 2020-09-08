@@ -49,4 +49,4 @@ minionsRouter.delete('/:minionId', (req, res, next) => {
     minionFxns.deleteOne(req, res, next);
 });
 
-export default minionsRouter;
+module.exports = minionsRouter;

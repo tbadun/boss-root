@@ -50,4 +50,4 @@ ideasRouter.delete('/:ideaId', (req, res, next) => {
     ideaFxns.deleteOne(req, res, next);
 });
 
-export default ideasRouter;
+module.exports = ideasRouter;

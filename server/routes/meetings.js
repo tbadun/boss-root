@@ -21,4 +21,4 @@ meetingsRouter.delete('/', (req, res, next) => {
     meetingsFxns.deleteAll(req, res, next);
 });
 
-export default meetingsRouter;
+module.exports = meetingsRouter;

@@ -58,4 +58,4 @@ workRouter.delete('/:minionId/work/:workId', (req, res, next) => {
     }
 });
 
-export default workRouter;
+module.exports = workRouter;
