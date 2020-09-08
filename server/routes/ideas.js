@@ -15,7 +15,12 @@ const DB_NAME = 'ideas';
 
 // get all ideas
 ideasRouter.get('/', (req, res, next) => {
-    res.send(getAllFromDatabase(DB_NAME));
+    const result = getAllFromDatabase(DB_NAME);
+    if (result) {
+        res.send(result);
+    } else {
+        res.status(400).send();
+    }
 });
 
 // create new idea
