@@ -1,13 +1,10 @@
 const express = require('express');
 const checkMillionDollarIdea = require('../checkMillionDollarIdea');
-const { isNumeric } = require('./util/helper');
 const Handler = require('./util/boiler-requests');
+const { isNumeric } = require('./util/helper');
 
-const ideasRouter = express.Router();
-
-// seed?
 // DEFAULT: '/api/ideas'
-
+const ideasRouter = express.Router();
 const ideaFxns = new Handler('ideas', 'ideaId');
 
 const validateNewIdea = req => {

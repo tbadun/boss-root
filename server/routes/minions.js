@@ -1,13 +1,13 @@
 const express = require('express');
 const { isNumeric } = require('./util/helper');
 const Handler = require('./util/boiler-requests');
-
-const minionsRouter = express.Router();
-
-// seed?
+const workRouter = require('./work');
 // DEFAULT: '/api/minions'
 
+const minionsRouter = express.Router();
 const minionFxns = new Handler('minions', 'minionId');
+
+minionsRouter.use('/', workRouter);
 
 const validateNewMinion = req => {
     if (typeof req.query.name !== 'string' || typeof req.query.weakness !== 'string' || typeof req.query.title !== 'string') {

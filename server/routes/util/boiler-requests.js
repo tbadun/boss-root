@@ -52,8 +52,21 @@ class Handler {
         }
     }
 
+    deleteAll(req, res, next) {
+        const result = deleteAllFromDatabase(DB_NAME);
+        if (result) {
+            return res.status(204).send();
+        } else {
+            return res.status(404).send();
+        }
+    }
+
     createOne(validCallback, req, res, next) {
-        const newEntry = validCallback(req);
+        if (validCallback.length === 0) {
+            const newEntry = validCallback()
+        } else {
+            const newEntry = validCallback(req);
+        }
         if (!typeof newEntry === 'string') {
             return res.status(201).send(addToDatabase(this.DB_NAME, newEntry));
         } else {

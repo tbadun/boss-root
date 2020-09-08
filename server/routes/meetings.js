@@ -1,45 +1,24 @@
 const express = require('express');
-const meetingsRouter = express.Router();
-const {
-    createMeeting,
-    getAllFromDatabase,
-    addToDatabase,
-    deleteAllFromDatabase,
-} = require('../db.js');
+const Handler = require('./util/boiler-requests');
+const { createMeeting } = require('../db')
 
-// seed?
 // DEFAULT: '/api/meetings'
-
-const DB_NAME = 'meetings';
+const meetingsRouter = express.Router();
+const meetingsFxns = new Handler('meetings', '');
 
 // get all ideas
 meetingsRouter.get('/', (req, res, next) => {
-    const result = getAllFromDatabase(DB_NAME);
-    if (result) {
-        res.send(result);
-    } else {
-        res.status(400).send();
-    }
+    meetingsFxns.getAll(req, res, next);
 });
 
 // create new meeting
 meetingsRouter.post('/', (req, res, next) => {
-    const result = addToDatabase(DB_NAME, createMeeting());
-    if (result) {
-        res.status(201).send(result);
-    } else {
-        res.status(400).send();
-    }
+    meetingsFxns.createOne(createMeeting, req, res, next);
 });
 
 // delete all meetings
 meetingsRouter.delete('/', (req, res, next) => {
-    const result = deleteAllFromDatabase(DB_NAME);
-    if (result) {
-        res.status(204).send();
-    } else {
-        res.status(404).send();
-    }
+    meetingsFxns.deleteAll(req, res, next);
 });
 
 export default meetingsRouter;

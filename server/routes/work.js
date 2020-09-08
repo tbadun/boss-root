@@ -1,21 +1,33 @@
 const express = require('express');
-const workRouter = express.Router();
-const {
-    getAllFromDatabase,
-    addToDatabase,
-    updateInstanceInDatabase,
-    deleteFromDatabasebyId,
-    isNumeric
-} = require('../db.js');
+const Handler = require('./util/boiler-requests');
+const { isNumeric } = require('./util/helper');
+const { getFromDatabaseById } = require('../db');
 
-// seed?
 // DEFAULT: '/api/minions/:minionId/work'
+const workRouter = express.Router();
+const workFxns = new Handler('work', 'workId');
 
-const DB_NAME = 'work';
+const validateNewWork = req => {
+    if (typeof req.query.minionId !== 'string' || typeof req.query.description !== 'string' || typeof req.query.title !== 'string') {
+        return 'minionId, description, and title must be strings';
+    }
+    if (!isNumeric(req.query.hours)) {
+        return 'hours must be numeric';
+    }
+    if (!getFromDatabaseById('minions', req.params.minionId)) {
+        return 'minion id invalid'
+    }
+    return {
+        minionId: req.query.minionId,
+        description: req.query.description,
+        title: req.query.title,
+        hours: Number(req.query.hours)
+    };
+}
 
 // get all work for minion
-workRouter.get('/', (req, res, next) => {
-    const result = getAllFromDatabase(DB_NAME);
+workRouter.get('/:minionId/work', (req, res, next) => {
+    const result = getAllFromDatabase(DB_NAME).filter(ele => ele.minionId === req.params.minionId);
     if (result) {
         res.send(result);
     } else {
@@ -24,39 +36,25 @@ workRouter.get('/', (req, res, next) => {
 });
 
 // create new work for minion
-workRouter.post('/', (req, res, next) => {
-    if (typeof req.query.minionId === 'string' && typeof req.query.description === 'string' && typeof req.query.title === 'string' && isNumeric(req.query.hours)) {
-        const work = {
-            minionId: req.query.minionId,
-            description: req.query.description,
-            title: req.query.title,
-            hours: Number(req.query.hours)
-        };
-        res.status(201).send(addToDatabase(DB_NAME, work));
-    } else {
-        res.status(400).send('minionId, description, and title must be strings; hours must be numeric.');
-    }
+workRouter.post('/:minionId/work', (req, res, next) => {
+    workFxns.createOne(validateNewWork, req, res, next)
 });
 
 // update specific work by id for minion
-workRouter.put('/:workId', (req, res, next) => {
-    var instance = req.query;
-    instance['id'] = req.params.workId;
-    const result = updateInstanceInDatabase(DB_NAME, instance);
-    if (result) {
-        res.send(result);
+workRouter.put('/:minionId/work/:workId', (req, res, next) => {
+    if (getFromDatabaseById('work', req.params.workId).minionId !== req.params.minionId) {
+        res.status(404).send('no such work for minion');
     } else {
-        res.status(404).send();
+        workFxns.updateOne(req, res, next);
     }
 });
 
 // delete specific work by id for minion
-workRouter.delete('/:workId', (req, res, next) => {
-    const result = deleteFromDatabasebyId(DB_NAME, req.params.workId);
-    if (result) {
-        res.status(204).send();
+workRouter.delete('/:minionId/work/:workId', (req, res, next) => {
+    if (getFromDatabaseById('work', req.params.workId).minionId !== req.params.minionId) {
+        res.status(404).send('no such work for minion');
     } else {
-        res.status(404).send();
+        workFxns.deleteOne(req, res, next);
     }
 });
 
