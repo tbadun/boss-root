@@ -9,7 +9,7 @@ const minionsRouter = express.Router();
 minionsRouter.use('/', workRouter);
 
 const validateNewMinion = req => {
-    if (typeof req.body.name !== 'string' || typeof req.body.weakness !== 'string' || typeof req.body.title !== 'string') {
+    if (typeof req.body.name !== 'string' || typeof req.body.weaknesses !== 'string' || typeof req.body.title !== 'string') {
         return 'name, weakness, and title must be strings';
     }
     if (!isNumeric(req.body.salary)) {

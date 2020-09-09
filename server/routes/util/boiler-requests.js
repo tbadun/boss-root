@@ -11,7 +11,8 @@ const isValid = (validCallback, req) => {
     if (validCallback.length === 0) {
         return true;
     }
-    return typeof validCallback(req) !== 'string';
+    const result = validCallback(req);
+    return typeof result !== 'string';
 }
 
 class Handler {
@@ -75,8 +76,9 @@ class Handler {
 
     createOne(req, res, next) {
         const newEntry = this.validator.length === 0 ? this.validator() : this.validator(req);
-        if (!typeof newEntry === 'string') {
-            return res.status(201).send(addToDatabase(this.DB_NAME, newEntry));
+        if (typeof newEntry !== 'string') {
+            const result = addToDatabase(this.DB_NAME, newEntry)
+            return res.status(201).send(result);
         } else {
             return res.status(400).send(newEntry);
         }
