@@ -7,20 +7,20 @@ const { getFromDatabaseById } = require('../db');
 const workRouter = express.Router();
 
 const validateNewWork = req => {
-    if (typeof req.query.minionId !== 'string' || typeof req.query.description !== 'string' || typeof req.query.title !== 'string') {
+    if (typeof req.body.minionId !== 'string' || typeof req.body.description !== 'string' || typeof req.body.title !== 'string') {
         return 'minionId, description, and title must be strings';
     }
-    if (!isNumeric(req.query.hours)) {
+    if (!isNumeric(req.body.hours)) {
         return 'hours must be numeric';
     }
     if (!getFromDatabaseById('minions', req.params.minionId)) {
         return 'minion id invalid'
     }
     return {
-        minionId: req.query.minionId,
-        description: req.query.description,
-        title: req.query.title,
-        hours: Number(req.query.hours)
+        minionId: req.body.minionId,
+        description: req.body.description,
+        title: req.body.title,
+        hours: Number(req.body.hours)
     };
 }
 

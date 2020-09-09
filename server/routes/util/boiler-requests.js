@@ -3,7 +3,8 @@ const {
     getFromDatabaseById,
     addToDatabase,
     updateInstanceInDatabase,
-    deleteFromDatabasebyId
+    deleteFromDatabasebyId,
+    deleteAllFromDatabase
 } = require('../../db');
 
 const isValid = (validCallback, req) => {
@@ -40,7 +41,7 @@ class Handler {
     }
 
     updateOne(req, res, next) {
-        var instance = req.query;
+        var instance = req.body;
         instance['id'] = req.params[this.ID_NAME];
         if (!isValid(this.validator, req)) {
             return res.status(404).send();
@@ -55,7 +56,7 @@ class Handler {
 
     deleteOne(req, res, next) {
         const id = req.params[this.ID_NAME];
-        const result = deleteFromDatabasebyId(this.DB_NAME, this.ID_NAME);
+        const result = deleteFromDatabasebyId(this.DB_NAME, id);
         if (result) {
             return res.status(204).send();
         } else {
@@ -64,7 +65,7 @@ class Handler {
     }
 
     deleteAll(req, res, next) {
-        const result = deleteAllFromDatabase(DB_NAME);
+        const result = deleteAllFromDatabase(this.DB_NAME);
         if (result) {
             return res.status(204).send();
         } else {
@@ -73,11 +74,7 @@ class Handler {
     }
 
     createOne(req, res, next) {
-        if (this.validator.length === 0) {
-            const newEntry = this.validator()
-        } else {
-            const newEntry = this.validator(req);
-        }
+        const newEntry = this.validator.length === 0 ? this.validator() : this.validator(req);
         if (!typeof newEntry === 'string') {
             return res.status(201).send(addToDatabase(this.DB_NAME, newEntry));
         } else {

@@ -7,23 +7,19 @@ const { isNumeric } = require('./util/helper');
 const ideasRouter = express.Router();
 
 const validateNewIdea = req => {
-    if (typeof req.query.name !== 'string' || typeof req.query.description !== 'string') {
+    if (typeof req.body.name !== 'string' || typeof req.body.description !== 'string') {
         return 'name and description must be strings';
     }
-    if (!(isNumeric(req.query.numWeeks) && isNumeric(req.query.weeklyRevenue))) {
+    if (!(isNumeric(req.body.numWeeks) && isNumeric(req.body.weeklyRevenue))) {
         return 'numWeeks and weeklyRevenue must be numeric';
     }
-    if (checkMillionDollarIdea(idea.numWeeks, idea.weeklyRevenue)) {
-        return 'Must be at least a $1,000,000 idea!';
-    }
     return {
-        name: req.query.name,
-        description: req.query.description,
-        numWeeks: Number(req.query.numWeeks),
-        weeklyRevenue: Number(req.query.weeklyRevenue)
+        name: req.body.name,
+        description: req.body.description,
+        numWeeks: Number(req.body.numWeeks),
+        weeklyRevenue: Number(req.body.weeklyRevenue)
     }
 }
-
 
 const ideaFxns = new Handler('ideas', 'ideaId', validateNewIdea);
 
@@ -33,7 +29,7 @@ ideasRouter.get('/', (req, res, next) => {
 });
 
 // create new idea
-ideasRouter.post('/', (req, res, next) => {
+ideasRouter.post('/', checkMillionDollarIdea, (req, res, next) => {
     ideaFxns.createOne(req, res, next);
 });
 
